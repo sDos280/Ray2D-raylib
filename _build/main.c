@@ -52,7 +52,7 @@ int main(void)
         ray.direction = Vector2Normalize(Vector2Subtract(GetMousePosition(), ray.position));
         //ray.direction = Vector2Normalize((Vector2) { 1, 0 });
         //collisioncircle = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
-        collisionLine = GetRay2DCollisionLineSegment(ray, (Vector2) { screenWidth * 0.5, 0 }, (Vector2) { screenWidth * 0.5, screenHeight });
+        collisionLine = GetRay2DCollisionLineSegment(ray, (Vector2) { screenWidth * 0.5 + 100, 0 }, (Vector2) { screenWidth * 0.5, screenHeight });
 
         BeginDrawing();
 
@@ -68,7 +68,7 @@ int main(void)
         }
 
         //DrawCircleLines(50, 50, 50, RED);
-        DrawLineV((Vector2) { screenWidth * 0.5, 0 }, (Vector2) { screenWidth * 0.5, screenHeight }, RED);
+        DrawLineV((Vector2) { screenWidth * 0.5 + 100, 0 }, (Vector2) { screenWidth * 0.5, screenHeight }, RED);
         DrawCircleV(pos, 5, RED);
 
         EndDrawing();

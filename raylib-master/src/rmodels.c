@@ -3541,7 +3541,7 @@ bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
 // Get collision info between ray2d and a line segment 
 Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
 {
-#define RAYLENGTH 1000
+#define RAYLENGTH 1000000
     Ray2DCollision collision = { 0 };
 
     Vector2 rayEndPoint = Vector2Add(ray.position, Vector2Scale(ray.direction, RAYLENGTH));
