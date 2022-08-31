@@ -3537,6 +3537,46 @@ bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
     return collision;
 }
 
+// source: http://www.jeffreythompson.org/collision-detection/line-line.php
+// Get collision info between ray2d and a line segment 
+Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
+{
+#define RAYLENGTH 1000
+    Ray2DCollision collision = { 0 };
+
+    Vector2 rayEndPoint = Vector2Add(ray.position, Vector2Scale(ray.direction, RAYLENGTH));
+
+    float x1 = rayEndPoint.x;
+    float y1 = rayEndPoint.y;
+    float x2 = ray.position.x;
+    float y2 = ray.position.y;
+    float x3 = p1.x;
+    float y3 = p1.y;
+    float x4 = p2.x;
+    float y4 = p2.y;
+
+    float uADenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+    float uBDenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+    if (uADenominator != 0 && uBDenominator != 0) {
+        float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / uADenominator;
+        float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / uBDenominator;
+        if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+            collision.hit = true;
+            collision.point = (Vector2){ x1 + (uA * (x2 - x1)), y1 + (uA * (y2 - y1)) };
+            collision.distance = Vector2Length(Vector2Subtract(collision.point, ray.position));
+        }
+        else {
+            collision.hit = false;
+        }
+        
+    }
+    else {
+        collision.hit = false;
+    }
+
+    return collision;
+}
+
 // source: https://www.bluebill.net/circle_ray_intersection.html
 // Get collision info between ray2d and circle
 Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius) 
@@ -3553,9 +3593,9 @@ Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius)
 
     float m = sqrtf(radius * radius - d * d);
 
-
-    if (Vector2Length(u) > radius) {
-
+    // Check if ray origin is inside the circle to calculate the correct collision point
+    if (Vector2Length(u) > radius) 
+    {
         Vector2 p2 = Vector2Add(ray.position, Vector2Add(u1, Vector2Scale(ray.direction, -m)));
        
         collision.distance = Vector2Length(Vector2Subtract(p2, ray.position));
@@ -3564,9 +3604,10 @@ Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius)
         collision.point = p2;
 
         // Calculate collision normal (pointing outwards)
-        collision.normal = Vector2Negate(Vector2Normalize(Vector2Subtract(collision.point, center)));
+        collision.normal = Vector2Normalize(Vector2Subtract(collision.point, center));
     }
-    else {
+    else 
+    {
         Vector2 p1 = Vector2Add(ray.position, Vector2Add(u1, Vector2Scale(ray.direction, +m)));
 
         collision.distance = Vector2Length(Vector2Subtract(p1, ray.position));
@@ -3723,6 +3764,68 @@ RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform)
 
     return collision;
 }
+
+// not working 
+/*// Get collision info between ray2d and triangle
+// NOTE: The points are expected to be in counter-clockwise winding
+// NOTE: Based on https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+Ray2DCollision GetRay2DCollisionTriangle(Ray2D ray, Vector2 p1, Vector2 p2, Vector2 p3)
+{
+
+#define EPSILON 0.000001f        // A small number
+
+    Ray2DCollision collision = { 0 };
+    Vector3 edge1 = { 0 };
+    Vector3 edge2 = { 0 };
+    Vector3 p, q, tv;
+    float det, invDet, u, v, t;
+
+    // Find vectors for two edges sharing V1
+    edge1 = Vector3Subtract((Vector3){ p2.x, p2.y, 0 }, (Vector3){ p1.x, p1.y, 0 });
+    edge2 = Vector3Subtract((Vector3){ p3.x, p3.y, 0 }, (Vector3){ p1.x, p1.y, 0 });
+
+    // Begin calculating determinant - also used to calculate u parameter
+    p = Vector3CrossProduct((Vector3){ ray.direction.x, ray.direction.y, 0 }, edge2);
+
+    // If determinant is near zero, ray lies in plane of triangle or ray is parallel to plane of triangle
+    det = Vector3DotProduct(edge1, p);
+
+    // Avoid culling!
+    if ((det > -EPSILON) && (det < EPSILON)) return collision;
+
+    invDet = 1.0f / det;
+
+    // Calculate distance from V1 to ray origin
+    tv = Vector3Subtract((Vector3){ ray.direction.x, ray.direction.y, 0 }, (Vector3){ p1.x, p1.y, 0 });
+
+    // Calculate u parameter and test bound
+    u = Vector3DotProduct(tv, p) * invDet;
+
+    // The intersection lies outside of the triangle
+    if ((u < 0.0f) || (u > 1.0f)) return collision;
+
+    // Prepare to test v parameter
+    q = Vector3CrossProduct(tv, edge1);
+
+    // Calculate V parameter and test bound
+    v = Vector3DotProduct((Vector3){ ray.direction.x, ray.direction.y, 0 }, q) * invDet;
+
+    // The intersection lies outside of the triangle
+    if ((v < 0.0f) || ((u + v) > 1.0f)) return collision;
+
+    t = Vector3DotProduct(edge2, q) * invDet;
+
+    if (t > EPSILON)
+    {
+        // Ray hit, get hit point and normal
+        collision.hit = true;
+        collision.distance = t;
+        collision.normal = Vector3ToVector2(Vector3Normalize(Vector3CrossProduct(edge1, edge2)));
+        collision.point = Vector3ToVector2(Vector3Add((Vector3) { ray.direction.x, ray.direction.y, 0 }, Vector3Scale((Vector3) { ray.direction.x, ray.direction.y, 0 }, t)));
+    }
+
+    return collision;
+}*/
 
 // Get collision info between ray and triangle
 // NOTE: The points are expected to be in counter-clockwise winding

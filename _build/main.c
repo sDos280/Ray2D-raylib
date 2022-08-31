@@ -24,27 +24,23 @@
 #include "raylib.h"
 #include "raymath.h"
 
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
 int main(void)
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
-    Ray2D ray = (Ray2D){0};
-    Ray2DCollision collision = { 0 };
+    
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+
+    Ray2D ray = (Ray2D){ 0 };
+    Ray2DCollision collisioncircle = { 0 };
+    Ray2DCollision collisionLine = { 0 };
     Vector2 pos = { screenWidth * 0.5, screenHeight * 0.5 };
     ray.direction = (Vector2){ 1, 0 };
     ray.position = pos;
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
+    SetTargetFPS(60);
 
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!WindowShouldClose())
     {
         if (IsKeyDown(KEY_W)) pos.y -= 5;
         if (IsKeyDown(KEY_S)) pos.y += 5;
@@ -54,27 +50,31 @@ int main(void)
         ray.position = pos;
 
         ray.direction = Vector2Normalize(Vector2Subtract(GetMousePosition(), ray.position));
-        collision = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
+        //ray.direction = Vector2Normalize((Vector2) { 1, 0 });
+        //collisioncircle = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
+        collisionLine = GetRay2DCollisionLineSegment(ray, (Vector2) { screenWidth * 0.5, 0 }, (Vector2) { screenWidth * 0.5, screenHeight });
 
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-        //DrawRay2D(ray, RED);
-        if (collision.hit) {
-            DrawLineV(ray.position, collision.point, BLUE);
+        /*if (collisioncircle.hit) {
+            DrawLineV(ray.position, collisioncircle.point, BLUE);
+            DrawLineV(collisioncircle.point, Vector2Add(collisioncircle.point, Vector2Scale(collisioncircle.normal, 50)), BLUE);
+        }*/
+
+        if (collisionLine.hit) {
+            DrawLineV(ray.position, collisionLine.point, BLUE);
+            //DrawLineV(collisioncircle.point, Vector2Add(collisioncircle.point, Vector2Scale(collisioncircle.normal, 50)), BLUE);
         }
-        DrawCircleLines(50, 50, 50, RED);
+
+        //DrawCircleLines(50, 50, 50, RED);
+        DrawLineV((Vector2) { screenWidth * 0.5, 0 }, (Vector2) { screenWidth * 0.5, screenHeight }, RED);
         DrawCircleV(pos, 5, RED);
-        //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
         EndDrawing();
-        //----------------------------------------------------------------------------------
     }
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    CloseWindow();
 
     return 0;
 }
