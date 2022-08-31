@@ -876,6 +876,21 @@ void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
     rlPopMatrix();
 }
 
+// Draw a ray2d line
+void DrawRay2D(Ray2D ray, Color color)
+{
+    float scale = 10000;
+
+    rlBegin(RL_LINES);
+    rlColor4ub(color.r, color.g, color.b, color.a);
+    rlColor4ub(color.r, color.g, color.b, color.a);
+
+    rlVertex2f(ray.position.x, ray.position.y);
+    rlVertex2f(ray.position.x + ray.direction.x * scale, ray.position.y + ray.direction.y * scale);
+    rlEnd();
+}
+
+
 // Draw a ray line
 void DrawRay(Ray ray, Color color)
 {
