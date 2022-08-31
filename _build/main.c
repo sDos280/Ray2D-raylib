@@ -34,6 +34,7 @@ int main(void)
     const int screenWidth = 800;
     const int screenHeight = 450;
     Ray2D ray = (Ray2D){0};
+    Ray2DCollision collision = { 0 };
     ray.direction = (Vector2){ 1, 0 };
     ray.position = (Vector2){ screenWidth * 0.5, screenHeight * 0.5 };
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
@@ -45,18 +46,15 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         ray.direction = Vector2Normalize(Vector2Subtract(GetMousePosition(), ray.position));
-
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-        // 
-        // Draw
-        //----------------------------------------------------------------------------------
+        collision = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
         DrawRay2D(ray, RED);
+        if (collision.hit) {
+            DrawLineV(ray.position, collision.point, BLUE);
+        }
+        DrawCircleLines(50, 50, 50, RED);
         //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
         EndDrawing();

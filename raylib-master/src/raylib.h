@@ -1429,7 +1429,7 @@ RLAPI void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, f
 RLAPI void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color); // Draw a cylinder/cone wires
 RLAPI void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color); // Draw a cylinder wires with base at startPos and top at endPos
 RLAPI void DrawPlane(Vector3 centerPos, Vector2 size, Color color);                                      // Draw a plane XZ
-RLAPI void DrawRay2D(Ray2D ray, Color color);
+RLAPI void DrawRay2D(Ray2D ray, Color color);                                                            // Draw a ray2d line
 RLAPI void DrawRay(Ray ray, Color color);                                                                // Draw a ray line
 RLAPI void DrawGrid(int slices, float spacing);                                                          // Draw a grid (centered at (0, 0, 0))
 
@@ -1495,6 +1495,7 @@ RLAPI bool IsModelAnimationValid(Model model, ModelAnimation anim);             
 RLAPI bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2);   // Check collision between two spheres
 RLAPI bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2);                                 // Check collision between two bounding boxes
 RLAPI bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius);                  // Check collision between box and sphere
+RLAPI Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius);              // Get collision info between ray2d and circle
 RLAPI RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius);                    // Get collision info between ray and sphere
 RLAPI RayCollision GetRayCollisionBox(Ray ray, BoundingBox box);                                    // Get collision info between ray and box
 RLAPI RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform);                       // Get collision info between ray and mesh

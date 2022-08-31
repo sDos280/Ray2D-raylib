@@ -3537,6 +3537,37 @@ bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
     return collision;
 }
 
+// source: https://www.bluebill.net/circle_ray_intersection.html
+// Get collision info between ray2d and circle
+Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius) {
+    Ray2DCollision collision = { 0 };
+
+    Vector2 u = Vector2Subtract(center, ray.position);
+    Vector2 u1 = Vector2Scale(ray.direction, Vector2DotProduct(u, ray.direction));
+    Vector2 u2 = Vector2Subtract(u, u1);
+
+    float d = Vector2Length(u2);
+
+    collision.hit = d <= radius;
+
+    float m = sqrtf(radius * radius - d * d);
+
+    Vector2 p2 = Vector2Add(ray.position, Vector2Add(u1, Vector2Scale(ray.direction, -m)));
+
+    if (collision.hit) {
+       
+        collision.distance = Vector2Length(Vector2Subtract(p2, ray.position));
+
+        // Calculate collision point
+        collision.point = p2;
+
+        // Calculate collision normal (pointing outwards)
+        collision.normal = Vector2Negate(Vector2Normalize(Vector2Subtract(collision.point, center)));
+    }
+
+    return collision;
+}
+
 // Get collision info between ray and sphere
 RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
 {
