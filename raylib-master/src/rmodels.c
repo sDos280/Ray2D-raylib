@@ -3539,7 +3539,8 @@ bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius)
 
 // source: https://www.bluebill.net/circle_ray_intersection.html
 // Get collision info between ray2d and circle
-Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius) {
+Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius) 
+{
     Ray2DCollision collision = { 0 };
 
     Vector2 u = Vector2Subtract(center, ray.position);
@@ -3552,14 +3553,26 @@ Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius) 
 
     float m = sqrtf(radius * radius - d * d);
 
-    Vector2 p2 = Vector2Add(ray.position, Vector2Add(u1, Vector2Scale(ray.direction, -m)));
 
-    if (collision.hit) {
+    if (Vector2Length(u) > radius) {
+
+        Vector2 p2 = Vector2Add(ray.position, Vector2Add(u1, Vector2Scale(ray.direction, -m)));
        
         collision.distance = Vector2Length(Vector2Subtract(p2, ray.position));
 
         // Calculate collision point
         collision.point = p2;
+
+        // Calculate collision normal (pointing outwards)
+        collision.normal = Vector2Negate(Vector2Normalize(Vector2Subtract(collision.point, center)));
+    }
+    else {
+        Vector2 p1 = Vector2Add(ray.position, Vector2Add(u1, Vector2Scale(ray.direction, +m)));
+
+        collision.distance = Vector2Length(Vector2Subtract(p1, ray.position));
+
+        // Calculate collision point
+        collision.point = p1;
 
         // Calculate collision normal (pointing outwards)
         collision.normal = Vector2Negate(Vector2Normalize(Vector2Subtract(collision.point, center)));

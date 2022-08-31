@@ -35,8 +35,9 @@ int main(void)
     const int screenHeight = 450;
     Ray2D ray = (Ray2D){0};
     Ray2DCollision collision = { 0 };
+    Vector2 pos = { screenWidth * 0.5, screenHeight * 0.5 };
     ray.direction = (Vector2){ 1, 0 };
-    ray.position = (Vector2){ screenWidth * 0.5, screenHeight * 0.5 };
+    ray.position = pos;
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
@@ -45,16 +46,25 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        if (IsKeyDown(KEY_W)) pos.y -= 5;
+        if (IsKeyDown(KEY_S)) pos.y += 5;
+        if (IsKeyDown(KEY_A)) pos.x -= 5;
+        if (IsKeyDown(KEY_D)) pos.x += 5;
+
+        ray.position = pos;
+
         ray.direction = Vector2Normalize(Vector2Subtract(GetMousePosition(), ray.position));
         collision = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
+
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-        DrawRay2D(ray, RED);
+        //DrawRay2D(ray, RED);
         if (collision.hit) {
             DrawLineV(ray.position, collision.point, BLUE);
         }
         DrawCircleLines(50, 50, 50, RED);
+        DrawCircleV(pos, 5, RED);
         //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
         EndDrawing();
