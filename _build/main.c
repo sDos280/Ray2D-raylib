@@ -34,8 +34,8 @@ int main(void)
     Ray2D ray = (Ray2D){ 0 };
     Ray2DCollision collisioncircle = { 0 };
     Ray2DCollision collisionLine = { 0 };
-    Vector2 pos = { screenWidth * 0.5, screenHeight * 0.5 };
-    ray.direction = (Vector2){ 1, 0 };
+    Vector2 pos = { screenWidth * 0.5+100, screenHeight * 0.5 };
+    ray.direction = (Vector2){ 0, 0 };
     ray.position = pos;
 
     SetTargetFPS(60);
@@ -50,7 +50,7 @@ int main(void)
         ray.position = pos;
 
         ray.direction = Vector2Normalize(Vector2Subtract(GetMousePosition(), ray.position));
-        //ray.direction = Vector2Normalize((Vector2) { 1, 0 });
+        //ray.direction = Vector2Normalize((Vector2) { -1, 0 });
         //collisioncircle = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
         collisionLine = GetRay2DCollisionLineSegment(ray, (Vector2) { screenWidth * 0.5 + 100, 0 }, (Vector2) { screenWidth * 0.5, screenHeight });
 
@@ -64,7 +64,7 @@ int main(void)
 
         if (collisionLine.hit) {
             DrawLineV(ray.position, collisionLine.point, BLUE);
-            //DrawLineV(collisioncircle.point, Vector2Add(collisioncircle.point, Vector2Scale(collisioncircle.normal, 50)), BLUE);
+            DrawLineV(collisionLine.point, Vector2Add(collisionLine.point, Vector2Scale(collisionLine.normal, 50)), BLUE);
         }
 
         //DrawCircleLines(50, 50, 50, RED);

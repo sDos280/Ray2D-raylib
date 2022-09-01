@@ -330,10 +330,18 @@ RMAPI Vector2 Vector2Scale(Vector2 v, float scale)
     return result;
 }
 
+// Calculate vector "cross product"
+RMAPI Vector2 Vector2CrossProduct(Vector2 v)
+{
+    Vector2 result = { -v.y, v.x };
+
+    return result;
+}
+
 // Multiply vector by vector
 RMAPI Vector2 Vector2Multiply(Vector2 v1, Vector2 v2)
 {
-    Vector2 result = { v1.x*v2.x, v1.y*v2.y };
+    Vector2 result = { v1.x * v2.x, v1.y * v2.y };
 
     return result;
 }

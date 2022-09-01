@@ -3554,7 +3554,7 @@ Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
     float y3 = p1.y;
     float x4 = p2.x;
     float y4 = p2.y;
-    if si
+
     float uADenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
     float uBDenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
     if (uADenominator != 0 && uBDenominator != 0) {
@@ -3564,16 +3564,26 @@ Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
             collision.hit = true;
             collision.point = (Vector2){ x1 + (uA * (x2 - x1)), y1 + (uA * (y2 - y1)) };
             collision.distance = Vector2Length(Vector2Subtract(collision.point, ray.position));
+            float OnWhichSide = Sign((x2 - x3) * (-y4 + y3) + (y2 - y3) * (x4 - x3));
+            if (OnWhichSide == 1) {
+                collision.normal = Vector2Negate(Vector2CrossProduct(Vector2Normalize(Vector2Subtract(p1, p2))));
+            }
+            else if (OnWhichSide == -1) {
+                collision.normal = Vector2CrossProduct(Vector2Normalize(Vector2Subtract(p1, p2)));
+            }
+            /*else if (OnWhichSide == 0) {
+                // no normal, on the line
+            }*/
         }
-        else {
+        else 
+        {
             collision.hit = false;
-            
         }
     }
-    else {
+    else 
+    {
         collision.hit = false;
     }
-
     return collision;
 }
 
