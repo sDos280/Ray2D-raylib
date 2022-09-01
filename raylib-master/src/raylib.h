@@ -1500,7 +1500,7 @@ RLAPI Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float ra
 RLAPI RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius);                    // Get collision info between ray and sphere
 RLAPI RayCollision GetRayCollisionBox(Ray ray, BoundingBox box);                                    // Get collision info between ray and box
 RLAPI RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform);                       // Get collision info between ray and mesh
-//RLAPI Ray2DCollision GetRay2DCollisionTriangle(Ray2D ray, Vector2 p1, Vector2 p2, Vector2 p3);       // Get collision info between ray2D and triangle
+RLAPI Ray2DCollision GetRay2DCollisionTriangle(Ray2D ray, Vector2 p1, Vector2 p2, Vector2 p3);      // Get collision info between ray2D and triangle
 RLAPI RayCollision GetRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3);            // Get collision info between ray and triangle
 RLAPI RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4);    // Get collision info between ray and quad
 
