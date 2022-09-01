@@ -23,19 +23,17 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#define RAYLENGTH 1000000
 
 int main(void)
 {
     const int screenWidth = 800;
     const int screenHeight = 450;
     
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "2d ray caster");
 
     Ray2D ray = (Ray2D){ 0 };
-    Ray2DCollision collisioncircle = { 0 };
-    Ray2DCollision collisionLine = { 0 };
-    Ray2DCollision collisionTriangle = { 0 };
-    Ray2DCollision collisionRectangle = { 0 };
+    Ray2DCollision collisions[4] = {0}; // id: 0->collisionCircle 1->collisionLine 2->collisionTriangle 3->collisionRectangle
     Vector2 pos = { screenWidth * 0.5, screenHeight * 0.5 };
     ray.direction = (Vector2){ 0, 0 };
     ray.position = pos;
@@ -52,39 +50,37 @@ int main(void)
         ray.position = pos;
 
         ray.direction = Vector2Normalize(Vector2Subtract(GetMousePosition(), ray.position));
-        //ray.direction = Vector2Normalize((Vector2) { -1, 0 });
-        //collisioncircle = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
-        //collisionLine = GetRay2DCollisionLineSegment(ray, (Vector2) { screenWidth * 0.5 + 100, 100 }, (Vector2) { screenWidth * 0.5, screenHeight - 100 });
-        //collisionTriangle = GetRay2DCollisionTriangle(ray, (Vector2) { screenWidth * 0.5 + 100, 100 }, (Vector2) { screenWidth * 0.5, screenHeight - 100 }, (Vector2) { screenWidth * 0.5+300, screenHeight - 200 });
-        collisionRectangle = GetRay2DCollisionRectangle(ray, (Rectangle) { screenWidth * 0.5 + 100, 100, 200, 300 } );
+        collisions[0] = GetRay2DCollisionCircle(ray, (Vector2) { 50, 50 }, 50);
+        collisions[1] = GetRay2DCollisionLineSegment(ray, (Vector2) { screenWidth * 0.5, 100 }, (Vector2) { screenWidth * 0.5-50, screenHeight - 100 });
+        collisions[2] = GetRay2DCollisionTriangle(ray, (Vector2) { screenWidth * 0.5 + 100, 100 }, (Vector2) { screenWidth * 0.5, screenHeight - 100 }, (Vector2) { screenWidth * 0.5+300, screenHeight - 200 });
+        collisions[3] = GetRay2DCollisionRectangle(ray, (Rectangle) { 100, 100, 200, 300 });
+
+        Ray2DCollision collision = { 0 };
+        collision.distance = RAYLENGTH;
+
+        for (int i = 0; i < 4; i++) {
+            if (collisions[i].hit)
+            {
+                // Save the closest hit edge
+                if (collision.distance >= collisions[i].distance) collision = collisions[i];
+            }
+        }
+
 
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
-        /*if (collisioncircle.hit) {
-            DrawLineV(ray.position, collisioncircle.point, BLUE);
-            DrawLineV(collisioncircle.point, Vector2Add(collisioncircle.point, Vector2Scale(collisioncircle.normal, 50)), BLUE);
-        }*/
+        
 
-        /*if (collisionLine.hit) {
-            DrawLineV(ray.position, collisionLine.point, BLUE);
-            DrawLineV(collisionLine.point, Vector2Add(collisionLine.point, Vector2Scale(collisionLine.normal, 50)), BLUE);
-        }*/
-
-        /*if (collisionTriangle.hit) {
-            DrawLineV(ray.position, collisionTriangle.point, BLUE);
-            DrawLineV(collisionTriangle.point, Vector2Add(collisionTriangle.point, Vector2Scale(collisionTriangle.normal, 50)), BLUE);
-        }*/
-
-        if (collisionRectangle.hit) {
-            DrawLineV(ray.position, collisionRectangle.point, BLUE);
-            DrawLineV(collisionRectangle.point, Vector2Add(collisionRectangle.point, Vector2Scale(collisionRectangle.normal, 50)), BLUE);
+        if (collision.hit) {
+            DrawLineV(ray.position, collision.point, BLUE);
+            DrawLineV(collision.point, Vector2Add(collision.point, Vector2Scale(collision.normal, 20)), BLUE);
         }
 
-        //DrawCircleLines(50, 50, 50, RED);
-        //DrawLineV((Vector2) { screenWidth * 0.5 + 100, 100 }, (Vector2) { screenWidth * 0.5, screenHeight - 100 }, RED);
-        //DrawTriangleLines((Vector2) { screenWidth * 0.5 + 100, 100 }, (Vector2) { screenWidth * 0.5, screenHeight - 100 }, (Vector2) { screenWidth * 0.5 + 300, screenHeight - 200 }, RED);
-        DrawRectangleLines(screenWidth * 0.5 + 100, 100, 200, 300 , RED);
+        DrawCircleLines(50, 50, 50, RED);
+        DrawLineV((Vector2) { screenWidth * 0.5, 100 }, (Vector2) { screenWidth * 0.5 - 50, screenHeight - 100 }, RED);
+        DrawTriangleLines((Vector2) { screenWidth * 0.5 + 100, 100 }, (Vector2) { screenWidth * 0.5, screenHeight - 100 }, (Vector2) { screenWidth * 0.5 + 300, screenHeight - 200 }, RED);
+        DrawRectangleLines(100, 100, 200, 300 , RED);
         DrawCircleV(pos, 5, RED);
 
         EndDrawing();
