@@ -3546,25 +3546,16 @@ Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
 
     Vector2 rayEndPoint = Vector2Add(ray.position, Vector2Scale(ray.direction, RAYLENGTH));
 
-    float x1 = rayEndPoint.x;
-    float y1 = rayEndPoint.y;
-    float x2 = ray.position.x;
-    float y2 = ray.position.y;
-    float x3 = p1.x;
-    float y3 = p1.y;
-    float x4 = p2.x;
-    float y4 = p2.y;
-
-    float uADenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-    float uBDenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+    float uADenominator = (p2.y - p1.y) * (ray.position.x - rayEndPoint.x) - (p2.x - p1.x) * (ray.position.y - rayEndPoint.y);
+    float uBDenominator = (p2.y - p1.y) * (ray.position.x - rayEndPoint.x) - (p2.x - p1.x) * (ray.position.y - rayEndPoint.y);
     if (uADenominator != 0 && uBDenominator != 0) {
-        float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / uADenominator;
-        float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / uBDenominator;
+        float uA = ((p2.x - p1.x) * (rayEndPoint.y - p1.y) - (p2.y - p1.y) * (rayEndPoint.x - p1.x)) / uADenominator;
+        float uB = ((ray.position.x - rayEndPoint.x) * (rayEndPoint.y - p1.y) - (ray.position.y - rayEndPoint.y) * (rayEndPoint.x - p1.x)) / uBDenominator;
         if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
             collision.hit = true;
-            collision.point = (Vector2){ x1 + (uA * (x2 - x1)), y1 + (uA * (y2 - y1)) };
+            collision.point = (Vector2){ rayEndPoint.x + (uA * (ray.position.x - rayEndPoint.x)), rayEndPoint.y + (uA * (ray.position.y - rayEndPoint.y)) };
             collision.distance = Vector2Length(Vector2Subtract(collision.point, ray.position));
-            float OnWhichSide = Sign((x2 - x3) * (-y4 + y3) + (y2 - y3) * (x4 - x3));
+            float OnWhichSide = Sign((ray.position.x - p1.x) * (-p2.y + p1.y) + (ray.position.y - p1.y) * (p2.x - p1.x));
             if (OnWhichSide == 1) {
                 collision.normal = Vector2Negate(Vector2CrossProduct(Vector2Normalize(Vector2Subtract(p1, p2))));
             }
