@@ -3662,8 +3662,27 @@ RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius)
 }
 
 // Get collision info between ray and Rectangle
-Ray2DCollision GetRay2DCollisionBox(Ray ray, Rectangle rect) {
+Ray2DCollision GetRay2DCollisionRectangle(Ray2D ray, Rectangle rect) 
+{
+#define RAYLENGTH 1000000
+    Ray2DCollision edgesCollision[4] = { 0 };
+    edgesCollision[0] = GetRay2DCollisionLineSegment(ray, (Vector2){ rect.x, rect.y}, (Vector2) { rect.x + rect.width, rect.y });
+    edgesCollision[1] = GetRay2DCollisionLineSegment(ray, (Vector2) { rect.x + rect.width, rect.y }, (Vector2) { rect.x + rect.width, rect.y + rect.height });
+    edgesCollision[2] = GetRay2DCollisionLineSegment(ray, (Vector2) { rect.x + rect.width, rect.y + rect.height }, (Vector2) { rect.x, rect.y + rect.height});
+    edgesCollision[3] = GetRay2DCollisionLineSegment(ray, (Vector2) { rect.x, rect.y + rect.height }, (Vector2) { rect.x, rect.y });
 
+    Ray2DCollision collision = { 0 };
+    collision.distance = RAYLENGTH;
+
+    for (int i = 0; i < 4; i++) {
+        if (edgesCollision[i].hit)
+        {
+            // Save the closest hit edge
+            if (collision.distance >= edgesCollision[i].distance) collision = edgesCollision[i];
+        }
+    }
+
+    return collision;
 }
 
 // Get collision info between ray and box

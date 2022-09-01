@@ -1498,6 +1498,7 @@ RLAPI bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2);             
 RLAPI bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius);                  // Check collision between box and sphere
 RLAPI Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius);              // Get collision info between ray2D and circle
 RLAPI RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius);                    // Get collision info between ray and sphere
+RLAPI Ray2DCollision GetRay2DCollisionRectangle(Ray2D ray, Rectangle rect);                         // Get collision info between ray2D and rectangle
 RLAPI RayCollision GetRayCollisionBox(Ray ray, BoundingBox box);                                    // Get collision info between ray and box
 RLAPI RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform);                       // Get collision info between ray and mesh
 RLAPI Ray2DCollision GetRay2DCollisionTriangle(Ray2D ray, Vector2 p1, Vector2 p2, Vector2 p3);      // Get collision info between ray2D and triangle
