@@ -3554,7 +3554,7 @@ Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
     float y3 = p1.y;
     float x4 = p2.x;
     float y4 = p2.y;
-
+    if si
     float uADenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
     float uBDenominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
     if (uADenominator != 0 && uBDenominator != 0) {
@@ -3567,8 +3567,8 @@ Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2)
         }
         else {
             collision.hit = false;
+            
         }
-        
     }
     else {
         collision.hit = false;

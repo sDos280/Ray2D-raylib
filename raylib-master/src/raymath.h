@@ -164,6 +164,14 @@ typedef struct float16 {
 // Module Functions Definition - Utils math
 //----------------------------------------------------------------------------------
 
+// Get sign value
+RMAPI float Sign(float value)
+{
+    if (value > 0.0f) return 1.0f;
+    if (value < 0.0f) return -1.0f;
+    return 0.0f;
+}
+
 // Clamp float value
 RMAPI float Clamp(float value, float min, float max)
 {
