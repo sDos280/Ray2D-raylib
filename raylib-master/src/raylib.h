@@ -1492,10 +1492,10 @@ RLAPI void UnloadModelAnimations(ModelAnimation *animations, unsigned int count)
 RLAPI bool IsModelAnimationValid(Model model, ModelAnimation anim);                         // Check model animation skeleton match
 
 // Collision detection functions
-RLAPI Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2);               // Check collision between ray2D and a line segment 
 RLAPI bool CheckCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2);   // Check collision between two spheres
 RLAPI bool CheckCollisionBoxes(BoundingBox box1, BoundingBox box2);                                 // Check collision between two bounding boxes
 RLAPI bool CheckCollisionBoxSphere(BoundingBox box, Vector3 center, float radius);                  // Check collision between box and sphere
+RLAPI Ray2DCollision GetRay2DCollisionLineSegment(Ray2D ray, Vector2 p1, Vector2 p2);               // Get collision info between ray2D and a line segment 
 RLAPI Ray2DCollision GetRay2DCollisionCircle(Ray2D ray, Vector2 center, float radius);              // Get collision info between ray2D and circle
 RLAPI RayCollision GetRayCollisionSphere(Ray ray, Vector3 center, float radius);                    // Get collision info between ray and sphere
 RLAPI Ray2DCollision GetRay2DCollisionRectangle(Ray2D ray, Rectangle rect);                         // Get collision info between ray2D and rectangle
